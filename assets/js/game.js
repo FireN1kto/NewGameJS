@@ -19,7 +19,7 @@ class Drawable {
         $('.elements').append(this.element);
     }
 
-    // метод обновляющий кооржинаты
+    // метод обновляющий координаты
     update() {
         this.x += this.offsets.x;
         this.y += this.offsets.y;
@@ -199,7 +199,7 @@ class Game {
         this.time = {
             m1: 0,
             m2: 0,
-            s1: 0,
+            s1: 3,
             s2: 0
         };
         this.ended = false;
@@ -306,20 +306,19 @@ class Game {
     // метод увеличивающий таймер
     timer() {
         let time = this.time;
-        time.s2++;
-        if(time.s2 >= 10) {
-            time.s2 = 0;
-            time.s1++;
-        }
-        if(time.s1 >= 6) {
-            time.s1 = 0;
-            time.m2++;
-        }
-        if(time.m2 >= 10) {
-            time.m2 = 0;
-            time.m1++;
+        if(time.s2 > 0) {
+            time.s2 --;
+        } else {
+            if(time.s1 > 0) {
+                time.s1 --;
+                time.s2 = 9;
+            }
         }
         $( '#timer').innerHTML = `${time.m1}${time.m2}:${time.s1}${time.s2}`
+
+        if (time.s1 === 0 && time.s2 === 0) {
+            this.end();
+        }
     }
 
     // метод завершающий игру и показывающий результат
