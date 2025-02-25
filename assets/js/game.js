@@ -234,6 +234,9 @@ class Game {
         addEventListener('keydown', e => {
             if(e.key === "Escape") this.pause = !this.pause;
         })
+        document.getElementById('stop').addEventListener('click', e => {
+            this.pause = !this.pause;
+        })
     }
 
     // метод с основным циклом обновления и отрисовки
@@ -249,10 +252,12 @@ class Game {
                     this.end();
                 }
                 $('.pause').style.display = 'none';
+                $('#stop').style.display = 'inline-block';
                 this.updateElements();
                 this.setParams();
             } else if(this.pause) {
                 $('.pause').style.display = 'flex'
+                $('#stop').style.display = 'none'
             }
             if(!this.ended) this.loop();
         });
@@ -302,6 +307,7 @@ class Game {
     // метод завершающий игру и показывающий результат
     end() {
         this.ended = true;
+        $('#stop').style.display = 'none';
         let time = this.time;
         if ((time.s1 >= 1 || time.m2 >= 1 || time.m1 >=1) && this.points >= 5) {
             $( '#playerName').innerHTML = `Поздравляем, ${this.name}!`;

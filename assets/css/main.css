@@ -126,7 +126,7 @@ main {
     align-items: center;
 }
 
-.stop {
+#stop {
     padding: 10px;
     border-radius: 10px;
     background: palevioletred;
