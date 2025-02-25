@@ -1,8 +1,10 @@
 let name = '';
 let game = {};
 let panel = 'start';
+// функция-сокращение для document.querySelector
 let $ = function(domElement) { return document.querySelector(domElement); };
 
+// обработчик кликов для навигации между страницами (start, game, end)
 let nav = () => {
     document.onclick = (event ) => {
         event.preventDefault();
@@ -21,6 +23,7 @@ let nav = () => {
     }
 }
 
+// функция для переключения между страницами
 let go = (page, attribute) => {
     let pages = ['start', 'game', 'end'];
     panel = page;
@@ -30,6 +33,7 @@ let go = (page, attribute) => {
     })
 }
 
+// цикл проверки имени игрока
 let startLoop = () => {
     let inter = setInterval( () => {
         checkName();
@@ -37,10 +41,12 @@ let startLoop = () => {
     }, 100)
 }
 
+// проверяет локальное хранилище для имени игрока
 let checkStorage = () => {
         $('#nameInput').value = localStorage.getItem('userName') || '';
 }
 
+// проверяет введенное имя и обновляет состояние кнопки "Начать игру"
 let checkName = () => {
     name = $( `#nameInput`).value.trim();
     if(name !== '') {
@@ -51,7 +57,7 @@ let checkName = () => {
         $('#startGame').setAttribute('disabled', 'disabled');
     }
 }
-
+//инициализация при загрузке страницы
 window.onload = () => {
     checkStorage();
     nav();
@@ -65,6 +71,7 @@ window.onload = () => {
     }, 500)
 }
 
+// генерирует случайное число в диапазоне
 let random = (min,max) => {
     min = Math.ceil(min);
     max = Math.ceil(max);

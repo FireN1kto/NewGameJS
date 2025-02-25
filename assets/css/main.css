@@ -120,3 +120,16 @@ main {
     font-weight: bold;
 }
 
+.Timer {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.stop {
+    padding: 10px;
+    border-radius: 10px;
+    background: palevioletred;
+    font-weight: bold;
+}
+

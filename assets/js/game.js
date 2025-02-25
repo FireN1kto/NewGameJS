@@ -1,3 +1,4 @@
+// Абстрактный класс для всех объектов на экране
 class Drawable {
     constructor(game) {
         this.game = game;
@@ -11,17 +12,20 @@ class Drawable {
         }
     }
 
+    // метод создающий элемент
     createElement() {
         this.element = document.createElement("div");
         this.element.className = "element " + this.constructor.name.toLowerCase();
         $('.elements').append(this.element);
     }
 
+    // метод обновляющий кооржинаты
     update() {
         this.x += this.offsets.x;
         this.y += this.offsets.y;
     }
 
+    // метод отвечающий за отрицовку
     draw() {
         this.element.style = `
             left: ${this.x}px;
@@ -31,10 +35,12 @@ class Drawable {
         `;
     }
 
+    // метод удаления элемента
     removeElement() {
         this.element.remove();
     }
 
+    // Метод isCollision проверяет столкновение с другим объектом
     isCollision(element) {
         let a = {
             x1: this.x,
@@ -53,6 +59,8 @@ class Drawable {
     }
 }
 
+
+// базовый класс для фруктов; определяет базовое поведение фруктов(рандомная позицыя по горизонтали и падение вниз)
 class Fruit extends Drawable {
     constructor(game) {
         super(game);
@@ -69,6 +77,7 @@ class Fruit extends Drawable {
         super.update();
     }
 
+    // обработка столкновения с игроком
     takePoint() {
         if (this.game.remove(this)) {
             this.removeElement();
@@ -76,6 +85,7 @@ class Fruit extends Drawable {
         }
     }
 
+    // выход за пределы экрана
     takeDamage() {
         if(this.game.remove(this)) {
             this.removeElement();
@@ -84,12 +94,14 @@ class Fruit extends Drawable {
     }
 }
 
+// класс для бананов
 class Banana extends Fruit {
     constructor(game) {
         super(game);
     }
 }
 
+// класс ддля яблок (падает со скоростью 5)
 class Apple extends Fruit {
     constructor(game) {
         super(game);
@@ -97,6 +109,7 @@ class Apple extends Fruit {
     }
 }
 
+// класс для апельсинов ( падает со скоростью 7)
 class Orange extends Fruit {
     constructor(game) {
         super(game);
@@ -104,6 +117,7 @@ class Orange extends Fruit {
     }
 }
 
+// класс для представления Игрока; определяет размеры и начальную позицыю, управление клавишами( arrowLeft, arrowRight, Space), механику использования навыка
 class Player extends Drawable {
     constructor(game) {
         super(game);
@@ -158,6 +172,7 @@ class Player extends Drawable {
         super.update();
     }
 
+    // метод applySkill сдвигает фрукты относительно игрока
     applySkill() {
         for(let i = 1; i< this.game.elements.length; i++) {
             if (this.game.elements[i].x < this.x + (this.w/2)) {
@@ -171,6 +186,7 @@ class Player extends Drawable {
     }
 }
 
+// главный класс управляющий игрой
 class Game {
     constructor() {
         this.name = name;
@@ -191,6 +207,7 @@ class Game {
         this.keyEvents();
     }
 
+    // метод удаляющий элемент из списка
     remove(el) {
         let idx = this.elements.indexOf(el);
         if (idx !== -1) {
@@ -200,22 +217,26 @@ class Game {
         return false;
     }
 
+    // метод запускающий основной игровой цикл
     start() {
         this.loop();
     }
 
+    // метод создающий новый элемент(фрукт или игрока)
     generate(className) {
         let element = new className(this);
         this.elements.push(element);
         return element;
     }
 
+    // метод обрабатывающий паузу по клавише Esc
     keyEvents() {
         addEventListener('keydown', e => {
             if(e.key === "Escape") this.pause = !this.pause;
         })
     }
 
+    // метод с основным циклом обновления и отрисовки
     loop() {
         requestAnimationFrame( () => {
             if (!this.pause) {
@@ -237,10 +258,12 @@ class Game {
         });
     }
 
+    // метод создающий случайный фрукт
     randomFruitGenerate() {
         this.generate(this.fruits[random(0, 2)])
     }
 
+    // метод обновляющий все элементы
     updateElements() {
         this.elements.forEach(element => {
             element.update();
@@ -248,6 +271,7 @@ class Game {
         })
     }
 
+    // метод обновляющий интерфейс(очки и здоровье)
     setParams() {
         let params = ['name', 'points', 'hp'];
         let values = [this.name,this.points,this.hp];
@@ -256,6 +280,7 @@ class Game {
         })
     }
 
+    // метод увеличивающий таймер
     timer() {
         let time = this.time;
         time.s2++;
@@ -274,6 +299,7 @@ class Game {
         $( '#timer').innerHTML = `${time.m1}${time.m2}:${time.s1}${time.s2}`
     }
 
+    // метод завершающий игру и показывающий результат
     end() {
         this.ended = true;
         let time = this.time;
