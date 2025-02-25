@@ -237,6 +237,11 @@ class Game {
         document.getElementById('stop').addEventListener('click', e => {
             this.pause = !this.pause;
         })
+
+        document.getElementById('resumeButton').addEventListener('click', e => {
+            this.pause = false;
+            $('.pause').style.display = 'none';
+        })
     }
 
     // метод с основным циклом обновления и отрисовки

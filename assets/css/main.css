@@ -131,5 +131,17 @@ main {
     border-radius: 10px;
     background: palevioletred;
     font-weight: bold;
+    cursor: pointer;
+}
+
+#resumeButton {
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: none;
+    background: palevioletred;
+    font-weight: bold;
+    cursor: pointer;
+    color: black;
 }
 
