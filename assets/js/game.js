@@ -105,7 +105,7 @@ class Banana extends Fruit {
 class Apple extends Fruit {
     constructor(game) {
         super(game);
-        this.offsets.y = 5;
+        this.offsets.y = 7;
     }
 }
 
@@ -271,6 +271,19 @@ class Game {
     // метод создающий случайный фрукт
     randomFruitGenerate() {
         this.generate(this.fruits[random(0, 2)])
+    }
+
+    randomFruitBlock() {
+        if (targetFruit) {
+            const fruitClass = this.fruits.find(fruit => fruit.name === targetFruit);
+            if (fruitClass) {
+                this.generate(fruitClass)
+            } else {
+                console.error('Неизвестный целевой фрукт: ' + targetFruit);
+            }
+        } else {
+            console.warn('Целевой фрукт не установлен');
+        }
     }
 
     // метод обновляющий все элементы

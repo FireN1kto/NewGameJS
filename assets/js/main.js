@@ -1,6 +1,7 @@
 let name = '';
 let game = {};
 let panel = 'start';
+let targetFruit = null;
 // функция-сокращение для document.querySelector
 let $ = function(domElement) { return document.querySelector(domElement); };
 
@@ -57,6 +58,20 @@ let checkName = () => {
         $('#startGame').setAttribute('disabled', 'disabled');
     }
 }
+
+let setTargetFruit = () => {
+    const fruits = ['Apple', 'Banana', 'Orange'];
+    const randomIndex = random(0, fruits.length - 1);
+    targetFruit = fruits[randomIndex];
+
+    const fruitImages = {
+        Apple: 'assets/img/apple.png',
+        Banana: 'assets/img/banana.png',
+        Orange: 'assets/img/orange.png',
+    };
+    $('#targetFruitImage').src = fruitImages[targetFruit];
+}
+
 //инициализация при загрузке страницы
 window.onload = () => {
     checkStorage();
@@ -65,6 +80,7 @@ window.onload = () => {
     setInterval( () => {
         if(panel === "game") {
             game = new Game();
+            setTargetFruit();
             game.start();
             panel = 'game process';
         }
