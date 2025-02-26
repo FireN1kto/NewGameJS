@@ -69,9 +69,11 @@ main {
     position: absolute;
 }
 
-.player {
-    background: url("../img/player.png") center no-repeat;
-    background-size: contain;
+.element.player {
+    position: absolute;
+    background: url("assets/img/player.png") no-repeat;
+    background-size: cover;
+    cursor: grab;
 }
 
 .apple {
@@ -154,5 +156,23 @@ main {
 .target-fruit img {
     width: 50px;
     height: 50px;
+}
+
+.katana-area {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 150px;
+    border: 2px dashed #000;
+    text-align: center;
+    line-height: 150px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.katana-area .element.player {
+    display: none; /* Сначала скрываем меч */
 }
 

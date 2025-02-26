@@ -71,6 +71,7 @@ class Fruit extends Drawable {
         this.offsets.y = 3;
         this.createElement();
     }
+
     update() {
         if(this.isCollision(this.game.player)) this.takePoint();
         if(this.y > window.innerHeight)this.takeDamage();
@@ -92,6 +93,7 @@ class Fruit extends Drawable {
             this.game.hp--;
         }
     }
+
 }
 
 // класс для бананов
@@ -123,9 +125,8 @@ class Player extends Drawable {
         super(game);
         this.w = 244;
         this.h = 109;
-        this.x = window.innerWidth / 2 - this.w / 2;
+        this.x = window.innerWidth / 10 - this.w / 10;
         this.y = window.innerHeight - this.h;
-        this.speedPerFrame = 20;
         this.skillTimer = 0;
         this.couldTimer = 0;
         this.keys = {
@@ -134,26 +135,53 @@ class Player extends Drawable {
             Space: false
         }
         this.createElement();
-        this.bindKeyEvents();
+        //this.bindKeyEvents();
+        this.bindDragEvents();
+        this.isActivated = false;
     }
 
-    bindKeyEvents() {
+    bindDragEvents() {
+        this.element.setAttribute('draggable', true); // Разрешаем перетаскивание
+
+        let offsetX = 0, offsetY = 0;
+
+        this.element.addEventListener('dragstart', (e) => {
+            if (!this.isActivated) return; // Если меч не активирован, игнорируем drag
+            e.dataTransfer.effectAllowed = 'move';
+            offsetX = e.offsetX;
+            offsetY = e.offsetY;
+        });
+
+        this.element.addEventListener('drop', (e) => {
+            const rect = document.body.getBoundingClientRect();
+            this.x = e.clientX - rect.left - offsetX;
+            this.y = e.clientY - rect.top - offsetY;
+            this.update();
+        });
+    }
+    activateKatana() {
+        this.isActivated = true; // Активируем меч
+        this.element.style.display = 'block'; // Показываем меч
+        $('#katanaArea').remove(); // Удаляем контейнер "Возьми меч!"
+    }
+
+    /*bindKeyEvents() {
         document.addEventListener('keydown', ev => this.changeKeyStatus(ev.code,true));
         document.addEventListener('keyup', ev => this.changeKeyStatus(ev.code,false));
     }
 
     changeKeyStatus(code, value) {
         if(code in this.keys) this.keys[code] = value;
-    }
+    }*/
 
     update() {
-        if(this.keys.ArrowLeft && this.x > 0) {
+        /*if(this.keys.ArrowLeft && this.x > 0) {
             this.offsets.x = -this.speedPerFrame;
         } else if(this.keys.ArrowRight && this.x < window.innerWidth - this.w) {
             this.offsets.x = this.speedPerFrame;
         } else {
             this.offsets.x = 0;
-        }
+        }*/
         if (this.keys.Space && this.couldTimer === 0) {
             this.skillTimer++;
             $('#skill').innerHTML = `осталось ${Math.ceil((240 - this.skillTimer) / 60)}`;
@@ -169,7 +197,9 @@ class Player extends Drawable {
             this.skillTimer = 0;
             $('#skill').innerHTML = 'Готово';
         }
-        super.update();
+        //super.update();
+
+        this.draw();
     }
 
     // метод applySkill сдвигает фрукты относительно игрока
@@ -185,6 +215,10 @@ class Player extends Drawable {
         }
     }
 }
+
+document.getElementById('katanaArea').addEventListener('click', () => {
+    game.player.activateKatana(); // Активируем меч при клике
+});
 
 // главный класс управляющий игрой
 class Game {
