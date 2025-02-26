@@ -202,6 +202,12 @@ class Game {
             s1: 3,
             s2: 0
         };
+        this.startTime = {
+            m1: 0,
+            m2: 0,
+            s1: 3,
+            s2: 0
+        };
         this.ended = false;
         this.pause = false;
         this.keyEvents();
@@ -324,19 +330,32 @@ class Game {
     // метод завершающий игру и показывающий результат
     end() {
         this.ended = true;
+        const spentTime = this.calculateSpentTime();
         $('#stop').style.display = 'none';
         let time = this.time;
         if ((time.s1 >= 1 || time.m2 >= 1 || time.m1 >=1) && this.points >= 5) {
             $( '#playerName').innerHTML = `Поздравляем, ${this.name}!`;
-            $( '#endTime').innerHTML = `Ваше время: ${time.m1}${time.m2}:${time.s1}${time.s2}`
+            $( '#endTime').innerHTML = `Вы потратили ${spentTime}`
             $( '#collectedFruits').innerHTML = `Вы собрали ${this.points} фруктов`;
             $( '#congratulation').innerHTML = `Вы выйграли!`
         } else {
             $( '#playerName').innerHTML = `Жаль, ${this.name}!`;
-            $( '#endTime').innerHTML = `Ваше время: ${time.m1}${time.m2}:${time.s1}${time.s2}`
+            $( '#endTime').innerHTML = `Вы потратили ${spentTime}`
             $( '#collectedFruits').innerHTML = `Вы собрали ${this.points} фруктов`;
             $( '#congratulation').innerHTML = `Вы програли!`
         }
         go( 'end', 'panel d-flex justify-content-center align-items-center')
+    }
+
+    // метод вычисляющий потраченное время
+    calculateSpentTime() {
+        const startSeconds = this.startTime.s1 * 10 + this.startTime.s2;
+        const currentSeconds = this.time.s1 * 10 + this.time.s2;
+        const spentSeconds = startSeconds - currentSeconds;
+
+        const minutes = Math.floor(spentSeconds / 60);
+        const seconds = spentSeconds % 60;
+
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 }
