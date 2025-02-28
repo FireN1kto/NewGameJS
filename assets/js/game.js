@@ -130,8 +130,6 @@ class Player extends Drawable {
         this.skillTimer = 0;
         this.couldTimer = 0;
         this.keys = {
-            ArrowLeft: false,
-            ArrowRight: false,
             Space: false
         }
         this.createElement();
@@ -160,46 +158,37 @@ class Player extends Drawable {
         });
     }
     activateKatana() {
-        this.isActivated = true; // Активируем меч
-        this.element.style.display = 'block'; // Показываем меч
-        $('#katanaArea').remove(); // Удаляем контейнер "Возьми меч!"
+        this.isActivated = true;
+        if (!this.katanaELement) {
+            this.katanaELement = document.createElement("div");
+            this.katanaELement.className = "katana-area";
+            this.katanaELement.style.display = "block";
+            this.element.appendChild(this.katanaELement);
+        }
     }
-
-    /*bindKeyEvents() {
-        document.addEventListener('keydown', ev => this.changeKeyStatus(ev.code,true));
-        document.addEventListener('keyup', ev => this.changeKeyStatus(ev.code,false));
-    }
-
-    changeKeyStatus(code, value) {
-        if(code in this.keys) this.keys[code] = value;
-    }*/
 
     update() {
-        /*if(this.keys.ArrowLeft && this.x > 0) {
-            this.offsets.x = -this.speedPerFrame;
-        } else if(this.keys.ArrowRight && this.x < window.innerWidth - this.w) {
-            this.offsets.x = this.speedPerFrame;
-        } else {
-            this.offsets.x = 0;
-        }*/
         if (this.keys.Space && this.couldTimer === 0) {
             this.skillTimer++;
             $('#skill').innerHTML = `осталось ${Math.ceil((240 - this.skillTimer) / 60)}`;
             this.applySkill();
         }
+
         if (this.skillTimer > 240 || (!this.keys.Space && this.skillTimer > 1)) {
             this.couldTimer++;
             $('#skill').innerHTML = `осталось ${Math.ceil((300 - this.couldTimer) / 60)}`;
             this.keys.Space = false;
         }
+
         if (this.couldTimer > 300) {
             this.couldTimer = 0;
             this.skillTimer = 0;
             $('#skill').innerHTML = 'Готово';
         }
-        //super.update();
 
-        this.draw();
+        if (this.isActivated) {
+            this.draw(); // Обновляем отрисовку игрока с катаной
+        }
     }
 
     // метод applySkill сдвигает фрукты относительно игрока
@@ -217,7 +206,10 @@ class Player extends Drawable {
 }
 
 document.getElementById('katanaArea').addEventListener('click', () => {
-    game.player.activateKatana(); // Активируем меч при клике
+    if (!game.player.isActivated) {
+        game.player.activateKatana(); // Активация меча у игрока
+        document.getElementById('katanaArea').classList.add('hidden'); // Скрываем блок для катаны
+    }
 });
 
 // главный класс управляющий игрой

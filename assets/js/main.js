@@ -15,8 +15,15 @@ let nav = () => {
                 break;
             case "restart":
                 go('game', 'd-block');
-                for(let child of $('.elements').querySelectorAll('.element')) {
+                for (let child of $('.elements').querySelectorAll('.element')) {
                     child.remove();
+                }
+                // Показываем блок для катаны
+                document.getElementById('katanaArea').classList.remove('hidden');
+                // Скрываем меч у игрока
+                if (game.player) {
+                    game.player.isActivated = false;
+                    game.player.katanaELement.style.display = "none";
                 }
                 break;
 
