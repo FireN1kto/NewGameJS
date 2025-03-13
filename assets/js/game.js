@@ -124,9 +124,9 @@ class Player extends Drawable {
     constructor(game) {
         super(game);
         this.w = 244;
-        this.h = 109;
+        this.h = 300;
         this.x = window.innerWidth / 10 - this.w / 10;
-        this.y = window.innerHeight - this.h;
+        this.y = window.innerHeight - this.h*(1.8);
         this.skillTimer = 0;
         this.couldTimer = 0;
         this.keys = {
@@ -139,32 +139,12 @@ class Player extends Drawable {
     }
 
     bindDragEvents() {
-        this.element.setAttribute('draggable', true); // Разрешаем перетаскивание
-
         let offsetX = 0, offsetY = 0;
-
-        this.element.addEventListener('dragstart', (e) => {
-            if (!this.isActivated) return; // Если меч не активирован, игнорируем drag
-            e.dataTransfer.effectAllowed = 'move';
-            offsetX = e.offsetX;
-            offsetY = e.offsetY;
-        });
-
-        this.element.addEventListener('drop', (e) => {
-            const rect = document.body.getBoundingClientRect();
-            this.x = e.clientX - rect.left - offsetX;
-            this.y = e.clientY - rect.top - offsetY;
-            this.update();
-        });
     }
     activateKatana() {
         this.isActivated = true;
-        if (!this.katanaELement) {
-            this.katanaELement = document.createElement("div");
-            this.katanaELement.className = "katana-area";
-            this.katanaELement.style.display = "block";
-            this.element.appendChild(this.katanaELement);
-        }
+        this.element.style.backgroundImage = "url('assets/img/player.png')";
+        this.element.style.cursor = "grad"
     }
 
     update() {
