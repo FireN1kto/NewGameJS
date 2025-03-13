@@ -73,6 +73,7 @@ main {
     background: url("../img/player.png") no-repeat;
     background-size: cover;
     cursor: grab;
+    position: absolute;
 }
 
 .apple {

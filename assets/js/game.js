@@ -140,6 +140,33 @@ class Player extends Drawable {
 
     bindDragEvents() {
         let offsetX = 0, offsetY = 0;
+        let isDragging = false;
+
+        this.element.addEventListener('mousedown', (e) => {
+            if(!this.isActivated) return;
+
+            isDragging = true;
+            offsetX = e.clientX - this.x;
+            offsetY = e.clientY - this.y;
+
+            const onMouseMove = (e) => {
+                const rect = document.body.getBoundingClientRect();
+                this.x = e.clientX - rect.left - offsetX;
+                this.y = e.clientY - rect.top - offsetY;
+                this.element.style.left = `${rect.left}px`;
+                this.element.style.top = `${rect.top}px`;
+            };
+
+            const onMouseUp = (e) => {
+                isDragging = false;
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+
     }
     activateKatana() {
         this.isActivated = true;
@@ -186,9 +213,13 @@ class Player extends Drawable {
 }
 
 document.getElementById('katanaArea').addEventListener('click', () => {
-    if (!game.player.isActivated) {
-        game.player.activateKatana(); // Активация меча у игрока
-        document.getElementById('katanaArea').classList.add('hidden'); // Скрываем блок для катаны
+    if (!game.player) {
+        game.player = game.generate(Player)
+    }
+    if(!game.player.isActivated) {
+        game.player.activateKatana();
+
+        document.getElementById('katanaArea').classList.add('hidden');
     }
 });
 
@@ -197,7 +228,7 @@ class Game {
     constructor() {
         this.name = name;
         this.elements = [];
-        this.player = this.generate(Player);
+        this.player = null
         this.counterForTimer = 0;
         this.fruits = [Apple, Banana, Orange]
         this.hp = 3;
