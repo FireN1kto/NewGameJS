@@ -62,27 +62,48 @@ class Drawable {
 
 // базовый класс для фруктов; определяет базовое поведение фруктов(рандомная позицыя по горизонтали и падение вниз)
 class Fruit extends Drawable {
-    constructor(game) {
+    constructor(game, isTarget) {
         super(game);
         this.w = 70;
         this.h = 70;
-        this.y = 60;
+        this.y = -this.h;
         this.x = random(0, window.innerWidth - this.w);
         this.offsets.y = 3;
+        this.isTarget = isTarget;
         this.createElement();
     }
 
     update() {
-        if(this.isCollision(this.game.player)) this.takePoint();
-        if(this.y > window.innerHeight)this.takeDamage();
+        if(this.isCollision(this.game.player)) {
+            if(this.isTarget) {
+                this.takePoint();
+            } else {
+                this.takePenalty();
+            }
+        }
+        if(this.y > window.innerHeight) {
+            if(this.isTarget) {
+                this.takeDamage()
+            }
+            this.removeElement();
+            this.game.remove(this)
+        }
         super.update();
     }
 
-    // обработка столкновения с игроком
+    // обработка прибавления очков за целевые фрукты
     takePoint() {
         if (this.game.remove(this)) {
             this.removeElement();
             this.game.points++;
+        }
+    }
+
+    // обработка уменьшения очков за нецелевые фрукты
+    takePenalty() {
+        if (this.game.remove(this)) {
+            this.removeElement();
+            this.game.points--;
         }
     }
 
@@ -108,6 +129,8 @@ class Apple extends Fruit {
     constructor(game) {
         super(game);
         this.offsets.y = 7;
+        this.w = 80;
+        this.h = 80;
     }
 }
 
@@ -133,7 +156,6 @@ class Player extends Drawable {
             Space: false
         }
         this.createElement();
-        //this.bindKeyEvents();
         this.bindDragEvents();
         this.isActivated = false;
     }
@@ -231,7 +253,7 @@ class Game {
         this.player = null
         this.counterForTimer = 0;
         this.fruits = [Apple, Banana, Orange]
-        this.hp = 3;
+        this.hp = 5;
         this.points = 0;
         this.time = {
             m1: 0,
@@ -247,7 +269,14 @@ class Game {
         };
         this.ended = false;
         this.pause = false;
+        this.targetFruit = null;
         this.keyEvents();
+    }
+
+    setTargetFruit = () => {
+        const fruits = ['Apple', 'Banana', 'Orange'];
+        const randomIndex = random(0, fruits.length - 1);
+        targetFruit = fruits[randomIndex];
     }
 
     // метод удаляющий элемент из списка
@@ -313,7 +342,10 @@ class Game {
 
     // метод создающий случайный фрукт
     randomFruitGenerate() {
-        this.generate(this.fruits[random(0, 2)])
+        this.isTarget = random(0,1) === 0;
+        const  fruitClass = this.fruits[random(0,this.fruits.length-1)];
+        const fruit = new fruitClass(this, this.isTarget)
+        this.elements.push(fruit)
     }
 
     randomFruitBlock() {
